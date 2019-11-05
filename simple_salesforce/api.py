@@ -2,7 +2,7 @@
 
 
 # has to be defined prior to login import
-DEFAULT_API_VERSION = '38.0'
+DEFAULT_API_VERSION = '39.0'
 
 
 import logging
@@ -760,7 +760,7 @@ class SalesforceAPI(Salesforce):
     """
     # pylint: disable=too-many-arguments
     def __init__(self, username, password, security_token, sandbox=False,
-                 sf_version='27.0'):
+                 sf_version='39.0'):
         """Initialize the instance with the given parameters.
 
         Arguments:
