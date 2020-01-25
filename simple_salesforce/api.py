@@ -716,8 +716,8 @@ class SFType(object):
             'Authorization': 'Bearer ' + self.session_id,
             'X-PrettyPrint': '1'
         }
-        additional_headers = kwargs.pop('headers', dict())
-        headers.update(additional_headers or dict())
+        additional_headers = kwargs.pop('headers', {})
+        headers.update(additional_headers or {})
         result = self.session.request(method, url, headers=headers, **kwargs)
 
         if result.status_code >= 300:
