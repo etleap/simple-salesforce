@@ -23,6 +23,7 @@ from simple_salesforce import tests
 from simple_salesforce.login import SalesforceLogin
 from simple_salesforce.exceptions import SalesforceAuthenticationFailed
 
+SALESFORCE_API_VERSION = "51.0"
 
 class TestSalesforceLogin(unittest.TestCase):
     """Tests for the SalesforceLogin function"""
@@ -54,6 +55,7 @@ class TestSalesforceLogin(unittest.TestCase):
             'response': on_response,
         }
         session_id, instance = SalesforceLogin(
+            sf_version=SALESFORCE_API_VERSION,
             session=session,
             username='foo@bar.com',
             password='password',
@@ -72,6 +74,7 @@ class TestSalesforceLogin(unittest.TestCase):
 
         with self.assertRaises(SalesforceAuthenticationFailed):
             SalesforceLogin(
+                sf_version=SALESFORCE_API_VERSION,
                 username='myemail@example.com.sandbox',
                 password='password',
                 security_token='token',

@@ -1,7 +1,9 @@
 """Tests for api.py"""
 
 import re
+
 from datetime import datetime
+
 try:
     # Python 2.6
     import unittest2 as unittest
@@ -27,7 +29,7 @@ from simple_salesforce.api import (
     SFType
 )
 
-
+SALESFORCE_API_VERSION = "51.0"
 
 def _create_sf_type(
     object_name='Case',
@@ -39,6 +41,7 @@ def _create_sf_type(
         object_name=object_name,
         session_id=session_id,
         sf_instance=sf_instance,
+        sf_version=SALESFORCE_API_VERSION,
         session=requests.Session()
     )
 
@@ -485,6 +488,7 @@ class TestSalesforce(unittest.TestCase):
             'response': on_response,
         }
         client = Salesforce(
+            version=SALESFORCE_API_VERSION,
             session=session,
             username='foo@bar.com',
             password='password',
@@ -506,16 +510,17 @@ class TestSalesforce(unittest.TestCase):
         # Use an invalid version that is guaranteed to never be used
         expected_version = '4.2'
         client = Salesforce(
+            version=expected_version,
             session=requests.Session(), username='foo@bar.com',
-            password='password', security_token='token',
-            version=expected_version)
+            password='password', security_token='token')
 
         self.assertEqual(
             client.base_url.split('/')[-2], 'v%s' % expected_version)
 
     def test_shared_session_to_sftype(self):
         """Test Salesforce and SFType instances share default `Session`"""
-        client = Salesforce(session_id=tests.SESSION_ID,
+        client = Salesforce(version=SALESFORCE_API_VERSION,
+                            session_id=tests.SESSION_ID,
                             instance_url=tests.SERVER_URL)
 
         self.assertIs(client.session, client.Contact.session)
@@ -523,7 +528,8 @@ class TestSalesforce(unittest.TestCase):
     def test_shared_custom_session_to_sftype(self):
         """Test Salesforce and SFType instances share custom `Session`"""
         session = requests.Session()
-        client = Salesforce(session_id=tests.SESSION_ID,
+        client = Salesforce(version=SALESFORCE_API_VERSION,
+                            session_id=tests.SESSION_ID,
                             instance_url=tests.SERVER_URL,
                             session=session)
 
@@ -533,7 +539,8 @@ class TestSalesforce(unittest.TestCase):
     def test_proxies_inherited_default(self):
         """Test Salesforce and SFType use same proxies"""
         session = requests.Session()
-        client = Salesforce(session_id=tests.SESSION_ID,
+        client = Salesforce(version=SALESFORCE_API_VERSION,
+                            session_id=tests.SESSION_ID,
                             instance_url=tests.SERVER_URL,
                             session=session)
 
@@ -544,7 +551,8 @@ class TestSalesforce(unittest.TestCase):
         """Test Salesforce and SFType use same custom proxies"""
         session = requests.Session()
         session.proxies = tests.PROXIES
-        client = Salesforce(session_id=tests.SESSION_ID,
+        client = Salesforce(version=SALESFORCE_API_VERSION,
+                            session_id=tests.SESSION_ID,
                             instance_url=tests.SERVER_URL,
                             session=session)
         self.assertIs(tests.PROXIES, client.session.proxies)
@@ -556,7 +564,7 @@ class TestSalesforce(unittest.TestCase):
         session.proxies = tests.PROXIES
 
         with patch('simple_salesforce.api.logger.warning') as mock_log:
-            client = Salesforce(session_id=tests.SESSION_ID,
+            client = Salesforce(version=SALESFORCE_API_VERSION, session_id=tests.SESSION_ID,
                 instance_url=tests.SERVER_URL, session=session, proxies={})
             self.assertIn('ignoring proxies', mock_log.call_args[0][0])
             self.assertIs(tests.PROXIES, client.session.proxies)

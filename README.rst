@@ -348,6 +348,19 @@ The proxy argument is the same as what requests uses, a map of scheme to proxy U
 
 All results are returned as JSON converted OrderedDict to preserve order of keys from REST responses.
 
+Run Tests
+---------
+1. Create a `virtualenv`:
+    $ pip install virtualenv
+    $ virtualenv venv
+    $ source venv/bin/activate
+2. Install `tox`:
+    $ pip install tox
+3. Run Tests:
+    $ tox
+4. Close virtual environment:
+    $ deactivate
+
 Authors & License
 -----------------
 

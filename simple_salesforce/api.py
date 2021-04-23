@@ -1,14 +1,10 @@
 """Core classes and exceptions for Simple-Salesforce"""
 
-
-# has to be defined prior to login import
-DEFAULT_API_VERSION = '39.0'
-
-
+import json
 import logging
 import warnings
+
 import requests
-import json
 
 try:
     from urlparse import urlparse, urljoin
@@ -51,9 +47,9 @@ class Salesforce(object):
     """
     # pylint: disable=too-many-arguments
     def __init__(
-            self, username=None, password=None, security_token=None,
+            self, version, username=None, password=None, security_token=None,
             session_id=None, instance=None, instance_url=None,
-            organizationId=None, sandbox=False, version=DEFAULT_API_VERSION,
+            organizationId=None, sandbox=False,
             proxies=None, session=None, client_id=None):
         """Initialize the instance with the given parameters.
 
@@ -112,12 +108,12 @@ class Salesforce(object):
 
             # Pass along the username/password to our login helper
             self.session_id, self.sf_instance = SalesforceLogin(
+                sf_version=self.sf_version,
                 session=self.session,
                 username=username,
                 password=password,
                 security_token=security_token,
                 sandbox=self.sandbox,
-                sf_version=self.sf_version,
                 proxies=self.proxies,
                 client_id=client_id)
 
@@ -139,12 +135,12 @@ class Salesforce(object):
 
             # Pass along the username/password to our login helper
             self.session_id, self.sf_instance = SalesforceLogin(
+                sf_version=self.sf_version,
                 session=self.session,
                 username=username,
                 password=password,
                 organizationId=organizationId,
                 sandbox=self.sandbox,
-                sf_version=self.sf_version,
                 proxies=self.proxies,
                 client_id=client_id)
 
@@ -465,8 +461,7 @@ class SFType(object):
 
     # pylint: disable=too-many-arguments
     def __init__(
-            self, object_name, session_id, sf_instance,
-            sf_version=DEFAULT_API_VERSION, proxies=None, session=None):
+            self, object_name, session_id, sf_instance, sf_version, proxies=None, session=None):
         """Initialize the instance with the given parameters.
 
         Arguments:
@@ -759,8 +754,7 @@ class SalesforceAPI(Salesforce):
 
     """
     # pylint: disable=too-many-arguments
-    def __init__(self, username, password, security_token, sandbox=False,
-                 sf_version='39.0'):
+    def __init__(self, username, password, security_token, sf_version, sandbox=False):
         """Initialize the instance with the given parameters.
 
         Arguments:
@@ -778,8 +772,8 @@ class SalesforceAPI(Salesforce):
             DeprecationWarning
         )
 
-        super(SalesforceAPI, self).__init__(username=username,
+        super(SalesforceAPI, self).__init__(version=sf_version,
+                                            username=username,
                                             password=password,
                                             security_token=security_token,
-                                            sandbox=sandbox,
-                                            version=sf_version)
+                                            sandbox=sandbox)
