@@ -1,0 +1,14 @@
+version = 1
+
+test_patterns = [
+  'simple-salesforce/tests/**',
+]
+
+exclude_patterns = [
+  'docs/**',
+
+]
+
+[[ analyzers ]]
+  name = 'python'
+  enabled = true
